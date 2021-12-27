@@ -8,7 +8,7 @@ Say you're using this when developing/testing:
 ```shell
 go test -v -count=1 -run '^TestMyFunc$' ./pkg/api/tests
 ```
-And want to switch to debugging it with `delve`. You can't just swap the program and have it work.
+And want to switch to debugging it with `dlv`. You can't just swap the program and have it work.
 ```diff
 -go test -v -count=1 -run '^TestMyFunc$' ./pkg/api/tests
 +dlv test -v -count=1 -run '^TestMyFunc$' ./pkg/api/tests
@@ -25,6 +25,14 @@ delver is running cmd:
 
 Type 'help' for list of commands.
 (dlv)
+```
+
+## Build instructions
+
+```shell
+git clone https://github.com/jhzn/delver
+go build -o delver ./...
+mv delver $SOME_WHERE_IN_YOU_PATH
 ```
 
 ## Note

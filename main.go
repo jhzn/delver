@@ -8,7 +8,28 @@ import (
 	"strings"
 )
 
+func printHelp() {
+	text := `delver is a program which takes the same arguments as 'go test' and starts dlv(delve) with those arguments.
+
+Example:
+	delver test -v -count=1 -run '^TestMyFunc$' ./pkg/api/tests
+
+Note that you first have to make sure that the command works with 'go test'
+
+If you encounter any issue, raise an issue on github: https://github.com/jhzn/delver
+`
+	fmt.Println(text)
+	os.Exit(0)
+}
+
 func main() {
+	if len(os.Args) == 1 {
+		printHelp()
+	}
+	switch os.Args[1] {
+	case "-h", "--help":
+		printHelp()
+	}
 	//remove program name("delver") and 1st arg("test")
 	cmd, err := getCmd(os.Args[2:])
 	if err != nil {
@@ -50,9 +71,6 @@ func mergeSlices(a, b []string) []string {
 }
 
 func getCmd(flags []string) ([]string, error) {
-	if len(flags) == 0 {
-		return nil, fmt.Errorf("missing arguments")
-	}
 	pkgPath := flags[len(flags)-1]
 
 	goTestArgs := []string{}
