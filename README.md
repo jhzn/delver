@@ -1,6 +1,6 @@
 ## What does it do?
 
-Delver makes the command line interface for debugging with `dlv` the same as the one used in `go test`
+Delver makes the command line interface for starting `dlv` the same as the one used in `go test`
 
 ### Example
 
