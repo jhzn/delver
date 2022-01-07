@@ -30,6 +30,9 @@ func main() {
 	case "-h", "--help":
 		printHelp()
 	}
+	if err := validateArgs(os.Args); err != nil {
+		log.Fatal(err)
+	}
 	//remove program name("delver") and 1st arg("test")
 	cmd, err := getCmd(os.Args[2:])
 	if err != nil {
@@ -41,6 +44,12 @@ func main() {
 		log.Fatal(err)
 	}
 	proc.Wait()
+}
+func validateArgs(args []string) error {
+	if args[1] != "test" {
+		return fmt.Errorf("program must be run with 'delver test'... got %v", args)
+	}
+	return nil
 }
 
 func runCmd(args ...string) (*os.Process, error) {
