@@ -30,11 +30,17 @@ func main() {
 	case "-h", "--help":
 		printHelp()
 	}
-	if err := validateArgs(os.Args); err != nil {
-		log.Fatal(err)
-	}
 	//remove program name("delver") and 1st arg("test")
-	cmd, err := getCmd(os.Args[2:])
+	args := []string{}
+	if os.Args[1] == "test" {
+		// run with "delver test" removed these
+		args = os.Args[2:]
+	} else {
+		// run with "delver" removed this
+		args = os.Args[1:]
+	}
+
+	cmd, err := getCmd(args)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -44,12 +50,6 @@ func main() {
 		log.Fatal(err)
 	}
 	proc.Wait()
-}
-func validateArgs(args []string) error {
-	if args[1] != "test" {
-		return fmt.Errorf("program must be run with 'delver test'... got %v", args)
-	}
-	return nil
 }
 
 func runCmd(args ...string) (*os.Process, error) {
@@ -80,18 +80,20 @@ func mergeSlices(a, b []string) []string {
 }
 
 func getCmd(flags []string) ([]string, error) {
-	pkgPath := flags[len(flags)-1]
+	lastIndex := len(flags) - 1
+	pkgPath := flags[lastIndex]
 
 	goTestArgs := []string{}
-	for _, f := range flags[0 : len(flags)-1] {
+	for _, f := range flags[0:lastIndex] {
 		goTestArgs = append(goTestArgs, strings.Replace(f, "-", "-test.", 1))
 	}
 	goTestArgs = append(goTestArgs, pkgPath)
 
+	buildArgs := `-gcflags="all=-N -l"`
 	delveArgs := []string{
 		"dlv",
 		"test",
-		fmt.Sprintf("--build-flags=%s", pkgPath),
+		fmt.Sprintf(`--build-flags='%s' %s`, buildArgs, pkgPath),
 		"--",
 	}
 
