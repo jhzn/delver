@@ -31,7 +31,7 @@ func main() {
 		printHelp()
 	}
 	//remove program name("delver") and 1st arg("test")
-	args := []string{}
+	var args []string
 	if os.Args[1] == "test" {
 		// run with "delver test" removed these
 		args = os.Args[2:]
@@ -68,17 +68,6 @@ func runCmd(args ...string) (*os.Process, error) {
 	return p, nil
 }
 
-func mergeSlices(a, b []string) []string {
-	merged := []string{}
-	for _, a := range a {
-		merged = append(merged, a)
-	}
-	for _, a := range b {
-		merged = append(merged, a)
-	}
-	return merged
-}
-
 func getCmd(flags []string) ([]string, error) {
 	lastIndex := len(flags) - 1
 	pkgPath := flags[lastIndex]
@@ -96,6 +85,6 @@ func getCmd(flags []string) ([]string, error) {
 		fmt.Sprintf(`--build-flags='%s' %s`, buildArgs, pkgPath),
 		"--",
 	}
-
-	return mergeSlices(delveArgs, goTestArgs), nil
+	// Merge slices
+	return append(delveArgs, goTestArgs...), nil
 }

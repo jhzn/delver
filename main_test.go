@@ -1,8 +1,10 @@
 package main
 
 import (
-	"reflect"
+	"fmt"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_getCmd(t *testing.T) {
@@ -22,7 +24,7 @@ func Test_getCmd(t *testing.T) {
 			want: []string{
 				"dlv",
 				"test",
-				"--build-flags=./pkg/api/tests",
+				fmt.Sprintf(`--build-flags='%s' %s`, `-gcflags="all=-N -l"`, "./pkg/api/tests"),
 				"--",
 				"-test.v",
 				"-test.count=1",
@@ -40,9 +42,7 @@ func Test_getCmd(t *testing.T) {
 				t.Errorf("getCmd() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("getCmd() got = %v, want %v", got, tt.want)
-			}
+			assert.Equal(t, tt.want, got)
 		})
 	}
 }
