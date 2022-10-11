@@ -27,12 +27,19 @@ Type 'help' for list of commands.
 (dlv)
 ```
 
-## Build instructions
+## Instructions
+
+### Install
+
+```shell
+go install github.com/jhzn/delver@latest
+```
+
+### Develop
 
 ```shell
 git clone https://github.com/jhzn/delver
 go build -o delver ./...
-mv delver $SOME_WHERE_IN_YOU_PATH
 ```
 
 ## Note

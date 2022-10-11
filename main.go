@@ -27,40 +27,43 @@ func main() {
 		printHelp()
 	}
 	switch os.Args[1] {
-	case "-h", "--help":
+	case "", "-h", "--help":
 		printHelp()
 	}
-	//remove program name("delver") and 1st arg("test")
-	var args []string
-	if os.Args[1] == "test" {
-		// run with "delver test" removed these
-		args = os.Args[2:]
-	} else {
-		// run with "delver" removed this
-		args = os.Args[1:]
-	}
 
-	cmd, err := getCmd(args)
+	dlvCmv, err := getCmd(cleanArgs(os.Args))
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("delver is running cmd: \n%v\n\n", cmd)
-	proc, err := runCmd(cmd...)
+
+	fmt.Printf("delver is running cmd: \n%v\n\n", dlvCmv)
+	proc, err := runCmd(dlvCmv...)
 	if err != nil {
 		log.Fatal(err)
 	}
 	proc.Wait()
 }
 
+// cleanArgs cleans up the argument list to delver
+func cleanArgs(args []string) []string {
+	// program was run with "delver test ..."
+	if args[1] == "test" {
+		return args[2:]
+	}
+	// program was run with "delver ..."
+	return args[1:]
+}
+
 func runCmd(args ...string) (*os.Process, error) {
-	arg, err := exec.LookPath(args[0])
+	dlvBinary, err := exec.LookPath(args[0])
 	if err != nil {
 		return nil, err
 	}
-	args[0] = arg
+	// Override binary to be absolute path
+	args[0] = dlvBinary
 
 	procAttr := os.ProcAttr{Files: []*os.File{os.Stdin, os.Stdout, os.Stderr}}
-	p, err := os.StartProcess(args[0], args, &procAttr)
+	p, err := os.StartProcess(dlvBinary, args, &procAttr)
 	if err != nil {
 		return nil, err
 	}
