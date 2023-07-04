@@ -81,7 +81,7 @@ func getCmd(flags []string) ([]string, error) {
 	}
 	goTestArgs = append(goTestArgs, pkgPath)
 
-	buildArgs := `-gcflags="all=-N -l"`
+	buildArgs := `-gcflags=-N`
 	delveArgs := []string{
 		"dlv",
 		"test",

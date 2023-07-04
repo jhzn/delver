@@ -24,7 +24,7 @@ func Test_getCmd(t *testing.T) {
 			want: []string{
 				"dlv",
 				"test",
-				fmt.Sprintf(`--build-flags='%s' %s`, `-gcflags="all=-N -l"`, "./pkg/api/tests"),
+				fmt.Sprintf(`--build-flags='%s' %s`, `-gcflags=-N`, "./pkg/api/tests"),
 				"--",
 				"-test.v",
 				"-test.count=1",
